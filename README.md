@@ -1,16 +1,72 @@
-Core Tech Stack
-Orchestration: n8n (Advanced AI Agent Node)
+Project 01: Football Data Assistant
 
-LLM Gateway: OpenRouter
 
-APIs Ecosystem: TheSportsDB & TheAudioDB (REST APIs)
 
-Patterns Used: Multi-Tool Routing, Context Enforcement, Graceful Degradation (Fallback Guardrails)
+An AI-powered sports assistant that seamlessly switches between fetching team/club general data and individual player statistics using dynamic API routing.
 
-Key Achievements:
 
--Dynamic Intent Routing: The agent analyzes the user's incoming message and chooses the correct tool block on the fly.
 
--Zero-Shot Accuracy: Engineered strict systemic prompts preventing the LLM from using training assumptions, forcing 100% reliance on live data.
+&#x20;The Technical Challenge (API Limitation)
 
--Developed as a technical showcase for advanced automation and AI orchestration capabilities.
+The free API used (TheSportsDB) features a player search endpoint (searchplayers.php?p=) that strictly requires a proper name to return data. It is not structured to handle queries based on generic terms, roles, or tactical positions.
+
+
+
+Consequently, whenever a user asked role-based questions (e.g., "Who is the goalkeeper of Brazil?"), the automation would fail or return empty datasets, because the API attempted to look for an athlete whose literal name was "Goalkeeper."
+
+
+
+&#x20;The Prompt Engineering Solution
+
+To bypass this limitation without switching APIs or bloating the workflow with complex custom code, the business logic was handled directly within the AI Agent's Prompt Engineering (Guardrails).
+
+
+
+Two strict instructions were injected into the model:
+
+
+
+Intent Classification: The agent was trained to instantly differentiate whether the user provided a specific player's name or asked about a tactical position.
+
+
+
+Instructional Fallback Message: If the user queries a position (triggering the API's limitation), the agent is instructed not to hallucinate (make up data). Instead, it immediately intercepts the flow and returns a user-friendly guidance message:
+
+
+
+"No information found in football database. Please try searching by the player's specific name."
+
+
+
+&#x20;The Result
+
+The automation achieved high resilience. Instead of crashing or throwing a system error when the API returns nothing, the agent takes control of the User Experience (UX), teaching the user how to interact with the bot while keeping the entire workflow execution at an impressive 1.5 seconds.
+
+
+
+&#x20;How to Use
+
+Import the workflow\_football.json into your n8n instance.
+
+
+
+Connect your OpenRouter credential to the Chat Model node.
+
+
+
+Open the chat UI and test with:
+
+
+
+"Tell me about Brazil team" (Triggers football\_club\_tool)
+
+
+
+"Who is Neymar?" (Triggers football\_player\_tool)
+
+
+
+"Who is the goalkeeper of Corinthias?" (Triggers the fallback guardrail gracefully)
+
+"""
+
