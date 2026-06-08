@@ -20,6 +20,7 @@ Instructional Fallback Message: If the user queries a position (triggering the A
 The automation achieved high resilience. Instead of crashing or throwing a system error when the API returns nothing, the agent takes control of the User Experience (UX), teaching the user how to interact with the bot while keeping the entire workflow execution.
 
  How to Use
+ 
 Import the workflow_football.json into your n8n instance.
 
 Connect your OpenRouter credential to the Chat Model node.
